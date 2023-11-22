@@ -1,0 +1,49 @@
+--Inserindo dados
+INSERT INTO Usuario (UsuarioID, Nome, Email, Senha)
+VALUES
+    (1, 'Primeiro Usuário', 'primeiro@email.com', 'senha1'),
+    (2, 'Segundo Usuário', 'segundo@email.com', 'senha2');
+
+
+INSERT INTO Produtos (ProdutosID, Nome, Quantidade, PrecoVenda)
+VALUES
+    (1, 'Produto1', 8, 21),
+    (2, 'Produto2', 10, 17);
+
+--Consultas
+Select * from Usuario;
+Select *from Produtos;
+Select * from PessoaFisica;
+Select * from PessoaJuridica;
+Select * from Pessoa;
+select * from MovimentoCompra;
+
+--Sequence
+create sequence seqID as numeric start with 100 increment by 1;
+
+-- Preenchendo tabela Pessoa com alguns exemplos
+insert into Pessoa (PessoaID, Nome, Endereco, Telefone) 
+values (next value for seqID, 'Alice', 'Rua das Flores', '0112345678');
+
+insert into Pessoa (PessoaID, Nome, Endereco, Telefone) 
+values (next value for seqID, 'Bob', 'Avenida Principal', '0223456789');
+
+-- Preenchendo tabela PessoaFisica e PessoaJuridica
+insert into PessoaFisica (PessoaFisicaID, Pessoa_PessoaID, CPF)
+values ('102', '102', '444777999');
+
+insert into PessoaJuridica (PessoaJuridicaID, Pessoa_PessoaID, CNPJ)
+values ('103', '103', '555888111');
+
+-- Atualizando a tabela MovimentoCompra
+UPDATE MovimentoCompra
+SET Quantidade = Quantidade - 2  
+WHERE Produtos_ProdutosID = 3;
+
+-- Consultando dados de pessoas físicas
+select Pessoa.PessoaID, Pessoa.Nome, Pessoa.Endereco, Pessoa.Telefone, PessoaFisica.CPF
+from Pessoa inner join PessoaFisica on Pessoa.PessoaID = PessoaFisica.Pessoa_PessoaID;
+
+-- Consultando dados de pessoas jurídicas
+select Pessoa.PessoaID, Pessoa.Nome, Pessoa.Endereco, Pessoa.Telefone, PessoaJuridica.CNPJ
+from Pessoa inner join PessoaJuridica on Pessoa.PessoaID = PessoaJuridica.Pessoa_PessoaID;

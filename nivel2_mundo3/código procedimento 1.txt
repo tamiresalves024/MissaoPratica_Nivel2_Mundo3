@@ -1,0 +1,64 @@
+-- Criação da tabela de usuários
+CREATE TABLE Usuarios (
+    id_usuario SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    senha VARCHAR(100)
+);
+
+-- Criação da tabela de pessoas físicas
+CREATE TABLE PessoaFisica (
+    id_pf SERIAL PRIMARY KEY,
+    id_usuario INTEGER UNIQUE REFERENCES Usuarios(id_usuario),
+    cpf VARCHAR(14) UNIQUE,
+    nome VARCHAR(100),
+    endereco VARCHAR(200),
+    telefone VARCHAR(20)
+);
+
+-- Criação da tabela de pessoas jurídicas
+CREATE TABLE PessoaJuridica (
+    id_pj SERIAL PRIMARY KEY,
+    id_usuario INTEGER UNIQUE REFERENCES Usuarios(id_usuario),
+    cnpj VARCHAR(18) UNIQUE,
+    nome_empresa VARCHAR(100),
+    endereco VARCHAR(200),
+    telefone VARCHAR(20)
+);
+
+-- Criação da tabela de produtos
+CREATE TABLE Produtos (
+    id_produto SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    quantidade INTEGER,
+    preco_venda DECIMAL(10, 2)
+);
+
+-- Criação da tabela de movimentos de compra
+CREATE TABLE MovimentoCompra (
+    id_movimento SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES Usuarios(id_usuario),
+    id_produto INTEGER REFERENCES Produtos(id_produto),
+    id_pessoa_juridica INTEGER REFERENCES PessoaJuridica(id_pj),
+    quantidade INTEGER,
+    preco_unitario DECIMAL(10, 2),
+    data_movimento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Criação da tabela de movimentos de venda
+CREATE TABLE MovimentoVenda (
+    id_movimento SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES Usuarios(id_usuario),
+    id_produto INTEGER REFERENCES Produtos(id_produto),
+    id_pessoa_fisica INTEGER REFERENCES PessoaFisica(id_pf),
+    quantidade INTEGER,
+    valor_total DECIMAL(10, 2),
+    data_movimento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Criação de sequência para geração de identificadores de pessoa
+CREATE SEQUENCE pessoa_id_seq START 1;
+
+-- Atribuição de identificadores para PessoaFisica e PessoaJuridica
+ALTER TABLE PessoaFisica ALTER COLUMN id_pf SET DEFAULT nextval('pessoa_id_seq');
+ALTER TABLE PessoaJuridica ALTER COLUMN id_pj SET DEFAULT nextval('pessoa_id_seq');
